@@ -66,6 +66,12 @@
     <color name="Cornsilk">#FFF8DC</color>
     <color name="FloralWhite">#FFFAF0</color>
     <color name="colorLayoutBG1">#ffcdd2</color>
+    <color name="blue1">#57b1df</color>
+    <color name="blue2">#67b8e2</color>
+    <color name="blue3">#9ad0eb</color>
+    <color name="green1">#33cc33</color>
+    <color name="green2">#70db70</color>
+    <color name="green3">#c2f0c2</color>
 
 
 </resources>
