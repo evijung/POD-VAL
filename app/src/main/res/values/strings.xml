@@ -3,4 +3,9 @@
     <string name="Login">Login</string>
     <string name="Username">Username</string>
     <string name="Password">Password</string>
+    <string name="TripNo">Trip 0</string>
+    <string name="worksheetNo">Work Sheet No : </string>
+    <string name="tripDate">Trip Date : </string>
+    <string name="Start">Start</string>
+    <string name="Finish">Finish</string>
 </resources>

@@ -6,4 +6,8 @@
     android:layout_height="match_parent"
     tools:context="com.hitachi_tstv.mist.it.pod_val_mitsu.DateDeliveryActivity">
 
+    <ListView
+        android:id="@+id/lisDADate"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </RelativeLayout>
