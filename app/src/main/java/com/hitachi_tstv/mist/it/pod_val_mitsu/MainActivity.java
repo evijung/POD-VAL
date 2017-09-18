@@ -35,5 +35,6 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.btnMALogin)
     public void onViewClicked() {
         Intent intent = new Intent(MainActivity.this, TripActivity.class);
+        startActivity(intent);
     }
 }

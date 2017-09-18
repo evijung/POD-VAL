@@ -24,6 +24,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/Login"
+            android:textColor="@color/Black"
             android:textSize="@dimen/txt_h1" />
 
         <EditText
@@ -48,7 +49,9 @@
             android:id="@+id/btnMALogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/green_button"
             android:text="@string/Login"
-            android:textSize="@dimen/txt_h3" />
+            android:textSize="@dimen/txt_h3"
+            android:textStyle="bold" />
     </LinearLayout>
 </RelativeLayout>
