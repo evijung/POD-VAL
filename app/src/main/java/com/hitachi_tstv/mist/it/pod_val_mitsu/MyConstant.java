@@ -5,5 +5,9 @@ package com.hitachi_tstv.mist.it.pod_val_mitsu;
  */
 
 public interface MyConstant {
+    public static final String projectString = "MMTH";
+    public static final String serverString = "http://service.eternity.co.th/";
+    public static final String pathString = "/app/CenterService/";
+    public static final String urlGetUserLogin = serverString + projectString + pathString + "getUserLogin.php";
 
 }

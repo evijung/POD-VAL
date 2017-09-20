@@ -8,4 +8,6 @@
     <string name="tripDate">Trip Date : </string>
     <string name="Start">Start</string>
     <string name="Finish">Finish</string>
+    <string name="err_gps1">Can\'t get Lat/Long Please Try Again</string>
+    <string name="errLogin">Login Fail!! Please Try Again</string>
 </resources>
