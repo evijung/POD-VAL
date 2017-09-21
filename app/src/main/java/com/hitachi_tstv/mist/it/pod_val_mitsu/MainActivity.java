@@ -11,6 +11,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 import butterknife.BindView;
@@ -41,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        loginStrings = new String[3];
+        loginStrings = new String[6];
 
     }
 
@@ -90,6 +94,20 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }else {
+                try{
+                    JSONArray jsonArray = new JSONArray(s);
+                    for (int i = 0;i < jsonArray.length();i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        loginStrings[0] = jsonObject.getString("drv_id");
+                        loginStrings[1] = jsonObject.getString("drv_name");
+                        loginStrings[2] = jsonObject.getString("ven_id");
+                        loginStrings[3] = jsonObject.getString("drv_pic");
+                        loginStrings[4] = jsonObject.getString("checkGPSIn");
+                        loginStrings[5] = jsonObject.getString("checkGPSOut");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 Intent intent = new Intent(MainActivity.this, TripActivity.class);
                 intent.putExtra("Login",loginStrings);
                 startActivity(intent);

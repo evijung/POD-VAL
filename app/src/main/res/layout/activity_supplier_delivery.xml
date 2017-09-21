@@ -43,6 +43,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/mini_margin"
+            android:gravity="center"
             android:orientation="horizontal"
             android:weightSum="1">
 
@@ -51,17 +53,18 @@
                 style="@style/progress"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="40dp"
                 android:layout_marginRight="35dp"
                 android:layout_marginTop="5dp"
+                android:layout_weight="0"
                 app:animated="true"
                 app:bootstrapBrand="success"
                 app:bootstrapMaxProgress="100"
-                app:bootstrapProgress="69"
-                app:bootstrapSize="lg"
+                app:bootstrapProgress="60"
+                app:bootstrapSize="xl"
                 app:bootstrapshowPercentage="true"
                 app:striped="true" />
-
         </LinearLayout>
 
         <LinearLayout
