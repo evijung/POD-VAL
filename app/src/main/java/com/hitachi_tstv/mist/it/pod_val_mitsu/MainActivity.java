@@ -27,7 +27,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
-
     @BindView(R.id.imgMALogo)
     ImageView logoImageView;
     @BindView(R.id.edtMAUsername)
@@ -38,15 +37,13 @@ public class MainActivity extends AppCompatActivity {
     Button loginButton;
 
     String[] loginStrings;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        loginStrings = new String[6];
-
+        loginStrings = new String[7];
     }
 
     class SyncGetUserLogin extends AsyncTask<Void, Void, String> {
@@ -94,9 +91,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }else {
-                try{
+                try {
                     JSONArray jsonArray = new JSONArray(s);
-                    for (int i = 0;i < jsonArray.length();i++) {
+                    for(int i = 0 ; i<jsonArray.length();i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         loginStrings[0] = jsonObject.getString("drv_id");
                         loginStrings[1] = jsonObject.getString("drv_name");
@@ -104,13 +101,19 @@ public class MainActivity extends AppCompatActivity {
                         loginStrings[3] = jsonObject.getString("drv_pic");
                         loginStrings[4] = jsonObject.getString("checkGPSIn");
                         loginStrings[5] = jsonObject.getString("checkGPSOut");
+                        loginStrings[6] = jsonObject.getString("gender");
+
                     }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
                 Intent intent = new Intent(MainActivity.this, TripActivity.class);
                 intent.putExtra("Login",loginStrings);
+
                 startActivity(intent);
+                finish();
 
             }
         }

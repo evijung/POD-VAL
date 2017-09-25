@@ -10,4 +10,21 @@
     <string name="Finish">Finish</string>
     <string name="err_gps1">Can\'t get Lat/Long Please Try Again</string>
     <string name="errLogin">Login Fail!! Please Try Again</string>
+    <string name="pallet">Pallet</string>
+    <string name="save_success">Save Success</string>
+    <string name="save_error">Save Fail!!! Please Try Again</string>
+    <string name="Date">Date</string>
+    <string name="Plan">Plan</string>
+    <string name="Header">Header</string>
+    <string name="ODOHint">Please add ODO Meter</string>
+    <string name="enter_start">Enter Miles Start</string>
+    <string name="enter_stop">Enter Miles Finish</string>
+    <string name="OK">OK</string>
+    <string name="err_odo">Error not get ODO</string>
+    <string name="cancel">Cancel</string>
+    <string name="err_gps">Sorry Can\'t Get Latitude, Longitude. Please Try again</string>
+    <string name="truck_license">Truck License :</string>
+    <string name="truck_type">Truck Type : </string>
+    <string name="driver_name">Driver Name  :</string>
+    <string name="trip">Trip</string>
 </resources>

@@ -36,7 +36,8 @@
                 android:layout_weight="0.6"
                 android:text="@string/worksheetNo"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/txt_nm" />
+                android:textSize="@dimen/txt_nm"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -46,12 +47,14 @@
                 android:layout_marginRight="@dimen/margin"
                 android:layout_marginTop="@dimen/margin"
                 android:layout_weight="1"
+                android:textColor="@color/Black"
                 android:textSize="@dimen/txt_nm" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="5dp"
             android:orientation="horizontal">
 
             <TextView
@@ -63,7 +66,8 @@
                 android:layout_weight="0.6"
                 android:text="@string/tripDate"
                 android:textColor="@color/Black"
-                android:textSize="@dimen/txt_nm" />
+                android:textSize="@dimen/txt_nm"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textView4"
@@ -73,6 +77,7 @@
                 android:layout_marginRight="@dimen/margin"
                 android:layout_marginTop="@dimen/margin"
                 android:layout_weight="1"
+                android:textColor="@color/Black"
                 android:textSize="@dimen/txt_nm" />
         </LinearLayout>
 

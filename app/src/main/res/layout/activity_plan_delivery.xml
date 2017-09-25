@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:padding="10dp"
-                android:tint="@color/OrangeRed"
+                android:tint="@color/blue"
                 app:srcCompat="@drawable/factory" />
 
             <TextView

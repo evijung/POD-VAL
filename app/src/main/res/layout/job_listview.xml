@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/mini_margin"
         android:layout_weight="1"
-        app:srcCompat="@drawable/factory" />
+        app:srcCompat="@drawable/factory"
+        android:tint="@color/blue" />
 
     <TextView
         android:id="@+id/txtJLVName"
