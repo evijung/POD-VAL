@@ -241,7 +241,7 @@
             android:background="@drawable/salmon_button"
             android:paddingEnd="20dp"
             android:paddingStart="20dp"
-            android:text="Confirm"
+            android:text="@string/departure"
             android:textSize="@dimen/txt_h3"
             android:textStyle="bold" />
     </LinearLayout>

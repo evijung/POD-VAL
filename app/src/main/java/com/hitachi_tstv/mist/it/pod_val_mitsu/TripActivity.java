@@ -49,10 +49,6 @@ public class TripActivity extends AppCompatActivity {
     private String[] loginStrings,positionStrings,planDtlIdStrings,placeTypeStrings,transportTypeStrings;
     String planDateStrings,planIdString,dateString;
 
-    @Override
-    public void onBackPressed() {
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

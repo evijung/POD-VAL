@@ -1,6 +1,7 @@
 package com.hitachi_tstv.mist.it.pod_val_mitsu;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -43,7 +44,9 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
     @BindView(R.id.btn_confirm)
     Button confirmButton;
 
-    String planDtlIdString, suppCodeString, suppNameString, totalPercentageString,spinnerValueString;
+    String planDtl2IdString, suppCodeString, suppNameString, totalPercentageString,spinnerValueString,flagArrivalString,positionString, planDtlIdString;
+    String dateString,planIdString, transportTypeString;
+
     @BindView(R.id.spnSDAPercentage)
     Spinner percentageSpinner;
     @BindView(R.id.editText)
@@ -57,10 +60,13 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_supplier_delivery);
         ButterKnife.bind(this);
 
-        planDtlIdString = getIntent().getStringExtra("planDtl2_id");
+        planDtl2IdString = getIntent().getStringExtra("planDtl2_id");
         loginStrings = getIntent().getStringArrayExtra("Login");
-
-
+        planDtlIdString = getIntent().getStringExtra("planDtlId");
+        positionString = getIntent().getStringExtra("position");
+        dateString = getIntent().getStringExtra("Date");
+        planIdString = getIntent().getStringExtra("planId");
+        transportTypeString = getIntent().getStringExtra("transporttype");
 
         SyncGetTripDetailPickup syncGetTripDetailPickup = new SyncGetTripDetailPickup(this);
         syncGetTripDetailPickup.execute();
@@ -187,11 +193,11 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... voids) {
             try {
-                Log.d("Tag", planDtlIdString);
+                Log.d("Tag", planDtl2IdString);
                 OkHttpClient okHttpClient = new OkHttpClient();
                 RequestBody requestBody = new FormBody.Builder()
                         .add("isAdd", "true")
-                        .add("planDtl2_id", planDtlIdString)
+                        .add("planDtl2_id", planDtl2IdString)
                         .build();
                 Request.Builder builder = new Request.Builder();
                 Request request = builder.url(MyConstant.urlGetTripDetailPickup).post(requestBody).build();
@@ -217,6 +223,7 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     suppCodeString = jsonObject.getString("supp_code");
                     suppNameString = jsonObject.getString("supp_nameEn");
+                    flagArrivalString = jsonObject.getString("flagArrivaled");
                     Log.d("Tag", "A " + jsonObject.getString("total_percent_load").equals("null"));
                     Log.d("Tag", "B " + jsonObject.getString("total_percent_load"));
                     if (jsonObject.getString("total_percent_load").equals("null")) {
@@ -227,7 +234,7 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
                 }
                 Float aFloat = Float.parseFloat(totalPercentageString);
 
-
+                nameTextView.setText(suppNameString);
                 truckProgress.setProgress(Math.round(aFloat));
 
                 final String[] size = getSizeSpinner(Math.round(aFloat));
@@ -246,6 +253,24 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
 
                     }
                 });
+
+                if (flagArrivalString.equals("Y")) {
+                    arrivalButton.setVisibility(View.INVISIBLE);
+
+                    percentageSpinner.setEnabled(true);
+                    PalletEditText.setEnabled(true);
+                    commentEditText.setEnabled(true);
+                    confirmButton.setEnabled(true);
+
+
+
+                } else {
+                    percentageSpinner.setEnabled(false);
+                    PalletEditText.setEnabled(false);
+                    commentEditText.setEnabled(false);
+                    confirmButton.setEnabled(false);
+
+                }
 
 
             } catch (JSONException e) {
@@ -275,7 +300,7 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
                 OkHttpClient okHttpClient = new OkHttpClient();
                 RequestBody requestBody = new FormBody.Builder()
                         .add("isAdd", "true")
-                        .add("planDtl2_id", planDtlIdString)
+                        .add("planDtl2_id", planDtl2IdString)
                         .add("Lat", lat)
                         .add("Lng", lng)
                         .add("drv_username", loginStrings[7])
@@ -305,6 +330,12 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         Toast.makeText(context, context.getResources().getString(R.string.save_success), Toast.LENGTH_LONG).show();
+                        arrivalButton.setVisibility(View.INVISIBLE);
+
+                        percentageSpinner.setEnabled(true);
+                        PalletEditText.setEnabled(true);
+                        commentEditText.setEnabled(true);
+                        confirmButton.setEnabled(true);
                     }
                 });
             } else {
@@ -338,7 +369,7 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
 
                 OkHttpClient okHttpClient = new OkHttpClient();
                 RequestBody requestBody = new FormBody.Builder()
-                        .add("PlanDtl2_ID", planDtlIdString)
+                        .add("PlanDtl2_ID", planDtl2IdString)
                         .add("isAdd", "true")
                         .add("Driver_Name", loginStrings[7])
                         .add("pallet_qty", qtyString)
@@ -370,6 +401,14 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         Toast.makeText(context, context.getResources().getString(R.string.save_success), Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(SupplierDeliveryActivity.this, JobActivity.class);
+                        intent.putExtra("Login", loginStrings);
+                        intent.putExtra("planId", planIdString);
+                        intent.putExtra("planDtlId", planDtlIdString);
+                        intent.putExtra("planDate", dateString);
+                        intent.putExtra("position", positionString);
+                        startActivity(intent);
+                        finish();
                     }
                 });
             } else {
@@ -393,7 +432,7 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
                 String latitude = utilityClass.getLatString();
                 String longitude = utilityClass.getLongString();
                 if (!(latitude == null)) {
-                    SyncUpdateArrival syncUpdateArrival = new SyncUpdateArrival(SupplierDeliveryActivity.this, planDtlIdString, loginStrings[0], latitude, longitude);
+                    SyncUpdateArrival syncUpdateArrival = new SyncUpdateArrival(SupplierDeliveryActivity.this, planDtl2IdString, loginStrings[0], latitude, longitude);
                     syncUpdateArrival.execute();
                 } else {
                     Toast.makeText(SupplierDeliveryActivity.this, getResources().getString(R.string.save_error), Toast.LENGTH_LONG).show();
