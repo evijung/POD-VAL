@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        loginStrings = new String[7];
+        loginStrings = new String[8];
     }
 
     class SyncGetUserLogin extends AsyncTask<Void, Void, String> {
@@ -72,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
                 return response.body().string();
             } catch (IOException e) {
                 e.printStackTrace();
-                return null;
+                Log.d("Tag", "e ==> " + e + " Line " + e.getStackTrace()[0].getLineNumber());
+                return "";
             }
 
         }
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
             Log.d("VAL-Tag-Main","S ==> " + s);
 
-            if (s.equals("[]")) {
+            if (s.equals("[]") || s == null) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -102,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
                         loginStrings[4] = jsonObject.getString("checkGPSIn");
                         loginStrings[5] = jsonObject.getString("checkGPSOut");
                         loginStrings[6] = jsonObject.getString("gender");
+                        loginStrings[7] = usernameString;
 
                     }
 

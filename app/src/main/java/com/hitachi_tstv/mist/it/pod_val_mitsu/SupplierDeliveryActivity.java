@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -42,7 +43,7 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
     @BindView(R.id.btn_confirm)
     Button confirmButton;
 
-    String planDtlIdString, suppCodeString, suppNameString, totalPercentageString;
+    String planDtlIdString, suppCodeString, suppNameString, totalPercentageString,spinnerValueString;
     @BindView(R.id.spnSDAPercentage)
     Spinner percentageSpinner;
     @BindView(R.id.editText)
@@ -56,7 +57,10 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_supplier_delivery);
         ButterKnife.bind(this);
 
-        planDtlIdString = "1";
+        planDtlIdString = getIntent().getStringExtra("planDtl2_id");
+        loginStrings = getIntent().getStringArrayExtra("Login");
+
+
 
         SyncGetTripDetailPickup syncGetTripDetailPickup = new SyncGetTripDetailPickup(this);
         syncGetTripDetailPickup.execute();
@@ -183,6 +187,7 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... voids) {
             try {
+                Log.d("Tag", planDtlIdString);
                 OkHttpClient okHttpClient = new OkHttpClient();
                 RequestBody requestBody = new FormBody.Builder()
                         .add("isAdd", "true")
@@ -195,6 +200,7 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
                 return response.body().string();
             } catch (IOException e) {
                 e.printStackTrace();
+                Log.d("VAL-Tag-SupDA", "e ==> " + e + " Line " + e.getStackTrace()[0].getLineNumber());
                 return null;
             }
         }
@@ -211,19 +217,35 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     suppCodeString = jsonObject.getString("supp_code");
                     suppNameString = jsonObject.getString("supp_nameEn");
+                    Log.d("Tag", "A " + jsonObject.getString("total_percent_load").equals("null"));
+                    Log.d("Tag", "B " + jsonObject.getString("total_percent_load"));
                     if (jsonObject.getString("total_percent_load").equals("null")) {
                         totalPercentageString = "0";
                     } else {
                         totalPercentageString = jsonObject.getString("total_percent_load");
                     }
                 }
+                Float aFloat = Float.parseFloat(totalPercentageString);
 
-                truckProgress.setProgress(Integer.parseInt(totalPercentageString));
 
-                String[] size = getSizeSpinner(Integer.parseInt(totalPercentageString));
+                truckProgress.setProgress(Math.round(aFloat));
 
+                final String[] size = getSizeSpinner(Math.round(aFloat));
+                spinnerValueString = size[0];
                 SpinnerAdaptor spinnerAdaptor = new SpinnerAdaptor(context, size);
                 percentageSpinner.setAdapter(spinnerAdaptor);
+
+                percentageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        spinnerValueString = size[i];
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
 
 
             } catch (JSONException e) {
@@ -235,39 +257,37 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
 
     class SyncUpdateArrival extends AsyncTask<Void, Void, String> {
         Context context;
-        String planDtl2String, usernameString;
+        String planDtl2String, usernameString,lat,lng;
 
-        public SyncUpdateArrival(Context context, String planDtl2String, String usernameString) {
+        public SyncUpdateArrival(Context context, String planDtl2String, String usernameString, String lat, String lng) {
             this.context = context;
             this.planDtl2String = planDtl2String;
             this.usernameString = usernameString;
-
+            this.lat = lat;
+            this.lng = lng;
         }
 
         @Override
         protected String doInBackground(Void... voids) {
-            try{
-                UtilityClass utilityClass = new UtilityClass(context);
-                utilityClass.setLatLong(0);
+            try {
 
-                String lat = utilityClass.getLatString();
-                String lng = utilityClass.getLongString();
 
                 OkHttpClient okHttpClient = new OkHttpClient();
                 RequestBody requestBody = new FormBody.Builder()
                         .add("isAdd", "true")
-                        .add("planDtl2_id", "")
+                        .add("planDtl2_id", planDtlIdString)
                         .add("Lat", lat)
                         .add("Lng", lng)
-                        .add("drv_username", "")
+                        .add("drv_username", loginStrings[7])
                         .build();
                 Request.Builder builder = new Request.Builder();
                 Request request = builder.url(MyConstant.urlUpdateArrival).post(requestBody).build();
                 Response response = okHttpClient.newCall(request).execute();
                 return response.body().string();
+
             } catch (IOException e) {
                 e.printStackTrace();
-                return null;
+                return "Fail";
 
             }
         }
@@ -275,19 +295,23 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            Log.d("Tag", s);
+
+
+            Log.d("Tag", "Bool ==> " + (s.equals("Success")));
 
             if (s.equals("Success")) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context,context.getResources().getString(R.string.save_success),Toast.LENGTH_LONG);
+                        Toast.makeText(context, context.getResources().getString(R.string.save_success), Toast.LENGTH_LONG).show();
                     }
                 });
             } else {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context,context.getResources().getString(R.string.save_error),Toast.LENGTH_LONG);
+                        Toast.makeText(context, context.getResources().getString(R.string.save_error), Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -296,21 +320,32 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
 
     class SyncUpdateDeparture extends AsyncTask<Void, Void, String> {
         Context context;
+        String lat, lng, qtyString, percentString, remarkString;
 
-        public SyncUpdateDeparture(Context context) {
+        public SyncUpdateDeparture(Context context, String lat, String lng, String qtyString, String percentString, String remarkString) {
             this.context = context;
+            this.lat = lat;
+            this.lng = lng;
+            this.qtyString = qtyString;
+            this.percentString = percentString;
+            this.remarkString = remarkString;
         }
 
         @Override
         protected String doInBackground(Void... voids) {
-            try{
+            try {
+
+
                 OkHttpClient okHttpClient = new OkHttpClient();
                 RequestBody requestBody = new FormBody.Builder()
-                        .add("PlanDtl2_ID","")
-                        .add("isAdd","true")
-                        .add("Driver_Name","")
-                        .add("Lat","")
-                        .add("Lng","")
+                        .add("PlanDtl2_ID", planDtlIdString)
+                        .add("isAdd", "true")
+                        .add("Driver_Name", loginStrings[7])
+                        .add("pallet_qty", qtyString)
+                        .add("percent_load", percentString)
+                        .add("remarkSupp",remarkString)
+                        .add("Lat", lat)
+                        .add("Lng", lng)
                         .build();
                 Request.Builder builder = new Request.Builder();
                 Request request = builder.url(MyConstant.urlUpdateDeparture).post(requestBody).build();
@@ -327,7 +362,24 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
+            Log.d("Tag", "S ==> " + s);
+            Log.d("Tag", "Bool ==> " + (s.equals("OK")));
 
+            if (s.equals("OK")) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, context.getResources().getString(R.string.save_success), Toast.LENGTH_LONG).show();
+                    }
+                });
+            } else {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, context.getResources().getString(R.string.save_error), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
 
         }
     }
@@ -336,10 +388,30 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_arrival:
-                SyncUpdateArrival syncUpdateArrival = new SyncUpdateArrival(SupplierDeliveryActivity.this, planDtlIdString, loginStrings[0]);
-                syncUpdateArrival.execute();
+                UtilityClass utilityClass = new UtilityClass(SupplierDeliveryActivity.this);
+                utilityClass.setLatLong(0);
+                String latitude = utilityClass.getLatString();
+                String longitude = utilityClass.getLongString();
+                if (!(latitude == null)) {
+                    SyncUpdateArrival syncUpdateArrival = new SyncUpdateArrival(SupplierDeliveryActivity.this, planDtlIdString, loginStrings[0], latitude, longitude);
+                    syncUpdateArrival.execute();
+                } else {
+                    Toast.makeText(SupplierDeliveryActivity.this, getResources().getString(R.string.save_error), Toast.LENGTH_LONG).show();
+                }
                 break;
             case R.id.btn_confirm:
+                utilityClass = new UtilityClass(SupplierDeliveryActivity.this);
+                utilityClass.setLatLong(0);
+                latitude = utilityClass.getLatString();
+                longitude = utilityClass.getLongString();
+                Log.d("Tag", "Spinner ==> " + spinnerValueString);
+                if (!(latitude == null)) {
+                    SyncUpdateDeparture syncUpdateDeparture = new SyncUpdateDeparture(SupplierDeliveryActivity.this, latitude, longitude,PalletEditText.getText().toString(), spinnerValueString,commentEditText.getText().toString());
+                    syncUpdateDeparture.execute();
+
+                }else {
+                    Toast.makeText(SupplierDeliveryActivity.this, getResources().getString(R.string.save_error), Toast.LENGTH_LONG).show();
+                }
                 break;
         }
     }

@@ -204,7 +204,7 @@ public class TripActivity extends AppCompatActivity {
 
             } catch (JSONException e) {
                 e.printStackTrace();
-                Log.d("Tag", "Exception:::::--->" + e +" Line : " + e.getStackTrace()[0].getLineNumber());
+                Log.d("Tag", "Exception :: " + e +" Line : " + e.getStackTrace()[0].getLineNumber());
             }
         }
     }

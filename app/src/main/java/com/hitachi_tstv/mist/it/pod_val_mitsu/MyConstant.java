@@ -14,8 +14,9 @@ public interface MyConstant {
     public static final String urlUpdateDeparture = serverString + projectString + pathString + "updateDeparture.php";
     public static final String urlGetPlanDate = serverString + projectString + pathString +"getPlanDate.php";
     public static final String urlGetTrip = serverString + projectString + pathString +"getTrip.php";
-    public static final String urlGetUpdateDCStart = serverString + projectString + pathString +"getupdateDCStart.php";
+    public static final String urlGetUpdateDCStart = serverString + projectString + pathString +"updateDCStart.php";
     public static final String urlGetPlanTrip = serverString + projectString + pathString + "getPlanTrip.php";
 
 
+    public static final String urlUpdateDCFinish = serverString + projectString + pathString + "updateDCFinish.php";
 }

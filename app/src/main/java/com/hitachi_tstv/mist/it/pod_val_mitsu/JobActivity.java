@@ -78,12 +78,10 @@ public class JobActivity extends AppCompatActivity {
 
     protected class SynGetJobList extends AsyncTask<Void, Void, String> {
         private Context context;
-        private String truckIDString;
 
 
         public SynGetJobList(Context context) {
             this.context = context;
-            this.truckIDString = truckIDString;
         }
 
         @Override
@@ -136,6 +134,8 @@ public class JobActivity extends AppCompatActivity {
                     transportTypeStrings[j] = jsonObject2.getString("transport_type");
                     placeTypeStrings[j] = jsonObject2.getString("placeType");
                 }
+
+
 
 
                 JobAdaptor manageJobAdaptor = new JobAdaptor(JobActivity.this, planDtlIdStrings, stationNameStrings, timeArrivalStrings,placeTypeStrings);
@@ -209,6 +209,64 @@ public class JobActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.d("Tag", "Error  back ==> " + e + " Line " + e.getStackTrace()[0].getLineNumber());
+                return "";
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Log.d("Tag", s);
+            if (s.equals("Success")) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(JobActivity.this, "Success", Toast.LENGTH_LONG).show();
+                        btnStart.setVisibility(View.INVISIBLE);
+                    }
+                });
+            } else {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(JobActivity.this, getResources().getText(R.string.err_gps), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
+    }
+
+    private class SynUpdateTripStatusFinish extends AsyncTask<Void, Void, String> {
+        String timeString, latString, longString,flagStrings;
+
+        public SynUpdateTripStatusFinish(String timeString, String latString, String longString , String flagStrings) {
+            this.timeString = timeString;
+            this.latString = latString;
+            this.longString = longString;
+            this.flagStrings = flagStrings;
+
+
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                OkHttpClient okHttpClient = new OkHttpClient();
+                RequestBody requestBody = new FormBody.Builder()
+                        .add("isAdd", "true")
+                        .add("drv_username", longString)
+                        .add("Lat", latString)
+                        .add("Lng", longString)
+                        .add("stamp", timeString)
+                        .build();
+
+                Request.Builder builder = new Request.Builder();
+                Request request = builder.post(requestBody).url(MyConstant.urlUpdateDCFinish).build();
+                Response response = okHttpClient.newCall(request).execute();
+                return response.body().string();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.d("Tag", "Error  back ==> " + e + " Line " + e.getStackTrace()[0].getLineNumber());
                 return null;
             }
         }
@@ -230,8 +288,6 @@ public class JobActivity extends AppCompatActivity {
 
                     Log.d("Tag", "Lat/Long : Time ==> " + lat[0] + "/" + lng[0] + " : " + time[0]);
 
-                    SynUpdateTripStatus synUpdateTripStatus = new SynUpdateTripStatus(time[0], lat[0], lng[0]);
-                    synUpdateTripStatus.execute();
 
                     AlertDialog.Builder dialog = new AlertDialog.Builder(this);
                     dialog.setTitle("Alert");
@@ -240,9 +296,8 @@ public class JobActivity extends AppCompatActivity {
 
                     dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(JobActivity.this, "Success", Toast.LENGTH_LONG).show();
-                            btnStart.setVisibility(View.INVISIBLE);
-
+                            SynUpdateTripStatus synUpdateTripStatus = new SynUpdateTripStatus(time[0], lat[0], lng[0]);
+                            synUpdateTripStatus.execute();
                         }
                     });
 
@@ -253,9 +308,6 @@ public class JobActivity extends AppCompatActivity {
                     });
 
                     dialog.show();
-                } else {
-                    Toast.makeText(JobActivity.this, getResources().getText(R.string.err_gps), Toast.LENGTH_LONG).show();
-
                 }
 
                 break;
@@ -264,6 +316,8 @@ public class JobActivity extends AppCompatActivity {
                 final String[] lngStrings = new String[1];
                 final String[] timeStrings = new String[1];
                 UtilityClass utilityClass1 = new UtilityClass(this);
+
+
                 if (utilityClass1.setLatLong(0)) {
                     latStrings[0] = utilityClass1.getLatString();
                     lngStrings[0] = utilityClass1.getLongString();
@@ -271,8 +325,8 @@ public class JobActivity extends AppCompatActivity {
                     Log.d("Tag", "Lat/Long : Time ==> " + latStrings[0] + "/" + lngStrings[0] + " : " + timeStrings[0]);
 
 
-                    SynUpdateTripStatus synUpdateTripStatus = new SynUpdateTripStatus(timeStrings[0], latStrings[0], lngStrings[0]);
-                    synUpdateTripStatus.execute();
+                    SynUpdateTripStatusFinish synUpdateTripStatusFinish = new SynUpdateTripStatusFinish(timeStrings[0], latStrings[0], lngStrings[0],"finish");
+                    synUpdateTripStatusFinish.execute();
 
                     AlertDialog.Builder dialog = new AlertDialog.Builder(this);
                     dialog.setTitle("Finish");
@@ -282,9 +336,13 @@ public class JobActivity extends AppCompatActivity {
                     dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             Toast.makeText(JobActivity.this, "Success", Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(JobActivity.this,DateDeliveryActivity.class);
+                            Intent intent = new Intent(JobActivity.this,TripActivity.class);
+                            intent.putExtra("Login", loginStrings);
                             buttonFinish.setEnabled(false);
                             startActivity(intent);
+
+
+                            Log.d("TAG", "Login ==> " + loginStrings);
                         }
                     });
 
