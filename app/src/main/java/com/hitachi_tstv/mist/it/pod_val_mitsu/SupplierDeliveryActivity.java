@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -53,6 +54,7 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
     EditText PalletEditText;
 
     String[] loginStrings;
+    Boolean doubleBackPressABoolean = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +74,30 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
         syncGetTripDetailPickup.execute();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (doubleBackPressABoolean) {
+            Intent intent = new Intent(SupplierDeliveryActivity.this, JobActivity.class);
+            intent.putExtra("Login", loginStrings);
+            intent.putExtra("planId", planIdString);
+            intent.putExtra("planDtlId", planDtlIdString);
+            intent.putExtra("planDate", dateString);
+            intent.putExtra("position", positionString);
+            startActivity(intent);
+            finish();
+        }
+
+        this.doubleBackPressABoolean = true;
+        Toast.makeText(this, getResources().getText(R.string.check_back), Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackPressABoolean=false;
+            }
+        }, 2000);
+    }
 
     String[] getSizeSpinner(int size) {
         String[] sizeStrings;
@@ -312,8 +338,7 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
 
             } catch (IOException e) {
                 e.printStackTrace();
-                return "Fail";
-
+                return "";
             }
         }
 

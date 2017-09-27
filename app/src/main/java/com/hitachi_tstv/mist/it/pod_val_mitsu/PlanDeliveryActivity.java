@@ -1,8 +1,10 @@
 package com.hitachi_tstv.mist.it.pod_val_mitsu;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -30,8 +32,8 @@ import okhttp3.Response;
 
 public class PlanDeliveryActivity extends AppCompatActivity {
 
-    private String[] planDtl2IdStrings, amountStrings, loginStrings;
-    private String planDtlIdString, planDtl2IdString, planNameString, positionString, planIdString, timeArrivalString, transporttypeString;
+    private String[] loginStrings;
+    private String planDtlIdString, planDtl2IdString, planNameString, positionString, planIdString, dateString, timeArrivalString, transporttypeString;
 
 
     @BindView(R.id.txt_name)
@@ -43,9 +45,36 @@ public class PlanDeliveryActivity extends AppCompatActivity {
     @BindView(R.id.btn_confirm)
     Button btnDeparturePD;
 
+    private Boolean doubleBackPressABoolean = false;
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackPressABoolean) {
+            Intent intent = new Intent(PlanDeliveryActivity.this, JobActivity.class);
+            intent.putExtra("Login", loginStrings);
+            intent.putExtra("planId", planIdString);
+            intent.putExtra("planDtlId", planDtlIdString);
+            intent.putExtra("planDate", dateString);
+            intent.putExtra("position", positionString);
+            startActivity(intent);
+            finish();
+        }
+
+        this.doubleBackPressABoolean = true;
+        Toast.makeText(this, getResources().getText(R.string.check_back), Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackPressABoolean = false;
+            }
+        }, 2000);
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plan_delivery);
@@ -60,8 +89,9 @@ public class PlanDeliveryActivity extends AppCompatActivity {
         transporttypeString = getIntent().getStringExtra("transporttype");
         positionString = getIntent().getStringExtra("position");
         timeArrivalString = getIntent().getStringExtra("timeArrival");
+        dateString = getIntent().getStringExtra("Date");
 
-        PlanDeliveryAdapter planDeliveryAdapter = new PlanDeliveryAdapter(PlanDeliveryActivity.this, planDtl2IdStrings, amountStrings, planDtlIdString);
+        PlanDeliveryAdapter planDeliveryAdapter = new PlanDeliveryAdapter(PlanDeliveryActivity.this, planDtlIdString);
         lisPDAPlan.setAdapter(planDeliveryAdapter);
 
         factoryTextviewPD.setText(planNameString);
@@ -84,7 +114,7 @@ public class PlanDeliveryActivity extends AppCompatActivity {
                 OkHttpClient okHttpClient = new OkHttpClient();
                 RequestBody requestBody = new FormBody.Builder()
                         .add("isAdd", "true")
-                        .add("planDtl2_id", "1")
+                        .add("planDtl2_id", planDtl2IdString)
                         .build();
 
                 Request.Builder builder = new Request.Builder();
@@ -156,8 +186,8 @@ public class PlanDeliveryActivity extends AppCompatActivity {
                 OkHttpClient okHttpClient = new OkHttpClient();
                 RequestBody requestBody = new FormBody.Builder()
                         .add("isAdd", "true")
-                        .add("drv_username", "abc")
-                        .add("planDtl2_id", "2")
+                        .add("drv_username", loginStrings[7])
+                        .add("planDtl2_id", planDtl2IdString)
                         .add("lat", latString)
                         .add("lng", longString)
                         .build();
@@ -211,10 +241,8 @@ public class PlanDeliveryActivity extends AppCompatActivity {
                 OkHttpClient okHttpClient = new OkHttpClient();
                 RequestBody requestBody = new FormBody.Builder()
                         .add("isAdd", "true")
-                        .add("Driver_Name", "abc")
-                        .add("PlanDtl2_ID", "2")
-//                      .add("user_name", loginStrings[1])
-//                      .add("planDtl2Id", planDtl2IdString)
+                        .add("Driver_Name", loginStrings[7])
+                        .add("PlanDtl2_ID", planDtl2IdString)
                         .add("lat", latString)
                         .add("lon", longString)
                         .build();
@@ -240,6 +268,14 @@ public class PlanDeliveryActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         Toast.makeText(getBaseContext(), R.string.save_success, Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(PlanDeliveryActivity.this, JobActivity.class);
+                        intent.putExtra("Login", loginStrings);
+                        intent.putExtra("planId", planIdString);
+                        intent.putExtra("planDtlId", planDtlIdString);
+                        intent.putExtra("planDate", dateString);
+                        intent.putExtra("position", positionString);
+                        startActivity(intent);
+                        finish();
                     }
                 });
             } else {

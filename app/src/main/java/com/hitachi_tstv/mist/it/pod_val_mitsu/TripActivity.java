@@ -50,6 +50,11 @@ public class TripActivity extends AppCompatActivity {
     String planDateStrings, planIdString, dateString;
 
     @Override
+    public void onBackPressed() {
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip);
@@ -60,7 +65,7 @@ public class TripActivity extends AppCompatActivity {
         dateString = getIntent().getStringExtra("Date");
         planIdString = getIntent().getStringExtra("PlanId");
 
-        if (planIdString == null) {
+        if (planIdString == null || planIdString.equals("")) {
             SynTripData synTripData = new SynTripData(TripActivity.this);
             synTripData.execute();
         } else {
@@ -207,6 +212,7 @@ public class TripActivity extends AppCompatActivity {
     public void onViewClicked() {
         Intent intent = new Intent(TripActivity.this, DateDeliveryActivity.class);
         intent.putExtra("Login", loginStrings);
+        intent.putExtra("planId", planIdString);
         startActivity(intent);
     }
 }

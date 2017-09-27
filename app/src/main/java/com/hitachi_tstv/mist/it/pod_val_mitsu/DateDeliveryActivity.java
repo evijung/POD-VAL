@@ -32,11 +32,22 @@ import okhttp3.Response;
 
 public class DateDeliveryActivity extends AppCompatActivity {
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(DateDeliveryActivity.this, TripActivity.class);
+        intent.putExtra("Login", loginStrings);
+        intent.putExtra("Date", dateString);
+        intent.putExtra("PlanId", planIdString);
+
+        startActivity(intent);
+        finish();
+    }
+
     @BindView(R.id.lisDADate)
     ListView lisDADate;
 
     String[] loginStrings, deliveryDateStrings, sumjobStrings, planIdStrings;
-    String dateString;
+    String dateString,planIdString;
 
 
     @Override
@@ -44,13 +55,9 @@ public class DateDeliveryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_date_delivery);
         ButterKnife.bind(this);
-//
         loginStrings = getIntent().getStringArrayExtra("Login");
         dateString = getIntent().getStringExtra("Date");
-
-//        Check login
-//        Resources res = getResources();
-//        String[] login = res.getStringArray(R.array.login_array);
+        planIdString = getIntent().getStringExtra("planId");
 
         SyncGetDate syncGetDate = new SyncGetDate(DateDeliveryActivity.this);
         syncGetDate.execute();

@@ -23,7 +23,7 @@ public class PlanDeliveryAdapter extends BaseAdapter {
     private String[] planDtl2IdString, amountStrings;
     private String planDtlString;
 
-    public PlanDeliveryAdapter(Context context, String[] planDtl2IdString, String[] amountStrings, String planDtlString) {
+    public PlanDeliveryAdapter(Context context, String planDtlString) {
         this.context = context;
         this.planDtl2IdString = planDtl2IdString;
         this.amountStrings = amountStrings;
