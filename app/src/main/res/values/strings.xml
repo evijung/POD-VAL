@@ -31,4 +31,9 @@
     <string name="check_exit">Please click BACK again to exit</string>
     <string name="login_success">Login Success</string>
     <string name="check_back">Please click BACK again to back page</string>
+    <string name="refresh">Refresh</string>
+    <string name="logout">Logout</string>
+    <string name="alert_logout">Do you want to logout?</string>
+    <string name="departDialog">Depart complete</string>
+    <string name="arrivalDialog">Arrival complete</string>
 </resources>

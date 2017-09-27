@@ -1,12 +1,17 @@
 package com.hitachi_tstv.mist.it.pod_val_mitsu;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -16,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapProgressBar;
+import com.beardedhen.androidbootstrap.api.attributes.BootstrapBrand;
+import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,8 +52,8 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
     @BindView(R.id.btn_confirm)
     Button confirmButton;
 
-    String planDtl2IdString, suppCodeString, suppNameString, totalPercentageString,spinnerValueString,flagArrivalString,positionString, planDtlIdString;
-    String dateString,planIdString, transportTypeString;
+    String planDtl2IdString, suppCodeString, suppNameString, totalPercentageString, spinnerValueString, flagArrivalString, positionString, planDtlIdString;
+    String dateString, planIdString, transportTypeString;
 
     @BindView(R.id.spnSDAPercentage)
     Spinner percentageSpinner;
@@ -55,6 +62,144 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
 
     String[] loginStrings;
     Boolean doubleBackPressABoolean = false;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.refresh:
+                Intent intent1 = new Intent(SupplierDeliveryActivity.this, SupplierDeliveryActivity.class);
+                intent1.putExtra("planDtl2_id", planDtl2IdString);
+                intent1.putExtra("Login", loginStrings);
+                intent1.putExtra("planDtlId", planDtlIdString);
+                intent1.putExtra("position", positionString);
+                intent1.putExtra("Date", dateString);
+                intent1.putExtra("planId", planIdString);
+                intent1.putExtra("transporttype", transportTypeString);
+                startActivity(intent1);
+                finish();
+                break;
+        }
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    BootstrapBrand[] getColorSpinner(int color) {
+        BootstrapBrand[] colorStrings;
+        switch (color) {
+            case 100:
+                colorStrings = new BootstrapBrand[1];
+                colorStrings[0] = DefaultBootstrapBrand.DANGER;
+                break;
+            case 90:
+                colorStrings = new BootstrapBrand[2];
+                colorStrings[0] = DefaultBootstrapBrand.DANGER;
+                colorStrings[1] = DefaultBootstrapBrand.DANGER;
+                break;
+            case 80:
+                colorStrings = new BootstrapBrand[3];
+                colorStrings[0] = DefaultBootstrapBrand.DANGER;
+                colorStrings[1] = DefaultBootstrapBrand.DANGER;
+                colorStrings[2] = DefaultBootstrapBrand.DANGER;
+                break;
+            case 70:
+                colorStrings = new BootstrapBrand[4];
+                colorStrings[0] = DefaultBootstrapBrand.WARNING;
+                colorStrings[1] = DefaultBootstrapBrand.DANGER;
+                colorStrings[2] = DefaultBootstrapBrand.DANGER;
+                colorStrings[3] = DefaultBootstrapBrand.DANGER;
+                break;
+            case 60:
+                colorStrings = new BootstrapBrand[5];
+                colorStrings[0] = DefaultBootstrapBrand.WARNING;
+                colorStrings[1] = DefaultBootstrapBrand.WARNING;
+                colorStrings[2] = DefaultBootstrapBrand.DANGER;
+                colorStrings[3] = DefaultBootstrapBrand.DANGER;
+                colorStrings[4] = DefaultBootstrapBrand.DANGER;
+                break;
+            case 50:
+                colorStrings = new BootstrapBrand[6];
+                colorStrings[0] = DefaultBootstrapBrand.WARNING;
+                colorStrings[1] = DefaultBootstrapBrand.WARNING;
+                colorStrings[2] = DefaultBootstrapBrand.WARNING;
+                colorStrings[3] = DefaultBootstrapBrand.DANGER;
+                colorStrings[4] = DefaultBootstrapBrand.DANGER;
+                colorStrings[5] = DefaultBootstrapBrand.DANGER;
+                break;
+            case 40:
+                colorStrings = new BootstrapBrand[7];
+                colorStrings[0] = DefaultBootstrapBrand.SUCCESS;
+                colorStrings[1] = DefaultBootstrapBrand.WARNING;
+                colorStrings[2] = DefaultBootstrapBrand.WARNING;
+                colorStrings[3] = DefaultBootstrapBrand.WARNING;
+                colorStrings[4] = DefaultBootstrapBrand.DANGER;
+                colorStrings[5] = DefaultBootstrapBrand.DANGER;
+                colorStrings[6] = DefaultBootstrapBrand.DANGER;
+                break;
+            case 30:
+                colorStrings = new BootstrapBrand[8];
+                colorStrings[0] = DefaultBootstrapBrand.SUCCESS;
+                colorStrings[1] = DefaultBootstrapBrand.SUCCESS;
+                colorStrings[2] = DefaultBootstrapBrand.WARNING;
+                colorStrings[3] = DefaultBootstrapBrand.WARNING;
+                colorStrings[4] = DefaultBootstrapBrand.WARNING;
+                colorStrings[5] = DefaultBootstrapBrand.DANGER;
+                colorStrings[6] = DefaultBootstrapBrand.DANGER;
+                colorStrings[7] = DefaultBootstrapBrand.DANGER;
+                break;
+            case 20:
+                colorStrings = new BootstrapBrand[9];
+                colorStrings[0] = DefaultBootstrapBrand.SUCCESS;
+                colorStrings[1] = DefaultBootstrapBrand.SUCCESS;
+                colorStrings[2] = DefaultBootstrapBrand.SUCCESS;
+                colorStrings[3] = DefaultBootstrapBrand.WARNING;
+                colorStrings[4] = DefaultBootstrapBrand.WARNING;
+                colorStrings[5] = DefaultBootstrapBrand.WARNING;
+                colorStrings[6] = DefaultBootstrapBrand.DANGER;
+                colorStrings[7] = DefaultBootstrapBrand.DANGER;
+                colorStrings[8] = DefaultBootstrapBrand.DANGER;
+                break;
+            case 10:
+                colorStrings = new BootstrapBrand[10];
+                colorStrings[0] = DefaultBootstrapBrand.SUCCESS;
+                colorStrings[1] = DefaultBootstrapBrand.SUCCESS;
+                colorStrings[2] = DefaultBootstrapBrand.SUCCESS;
+                colorStrings[3] = DefaultBootstrapBrand.SUCCESS;
+                colorStrings[4] = DefaultBootstrapBrand.WARNING;
+                colorStrings[5] = DefaultBootstrapBrand.WARNING;
+                colorStrings[6] = DefaultBootstrapBrand.WARNING;
+                colorStrings[7] = DefaultBootstrapBrand.DANGER;
+                colorStrings[8] = DefaultBootstrapBrand.DANGER;
+                colorStrings[9] = DefaultBootstrapBrand.DANGER;
+                break;
+            case 0:
+                colorStrings = new BootstrapBrand[11];
+                colorStrings[0] = DefaultBootstrapBrand.SUCCESS;
+                colorStrings[1] = DefaultBootstrapBrand.SUCCESS;
+                colorStrings[2] = DefaultBootstrapBrand.SUCCESS;
+                colorStrings[3] = DefaultBootstrapBrand.SUCCESS;
+                colorStrings[4] = DefaultBootstrapBrand.SUCCESS;
+                colorStrings[5] = DefaultBootstrapBrand.WARNING;
+                colorStrings[6] = DefaultBootstrapBrand.WARNING;
+                colorStrings[7] = DefaultBootstrapBrand.WARNING;
+                colorStrings[8] = DefaultBootstrapBrand.DANGER;
+                colorStrings[9] = DefaultBootstrapBrand.DANGER;
+                colorStrings[10] = DefaultBootstrapBrand.DANGER;
+                break;
+            default:
+                colorStrings = null;
+                break;
+        }
+
+        return colorStrings;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +239,7 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
 
             @Override
             public void run() {
-                doubleBackPressABoolean=false;
+                doubleBackPressABoolean = false;
             }
         }, 2000);
     }
@@ -264,8 +409,9 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
                 truckProgress.setProgress(Math.round(aFloat));
 
                 final String[] size = getSizeSpinner(Math.round(aFloat));
+                final BootstrapBrand[] color = getColorSpinner(Math.round(aFloat));
                 spinnerValueString = size[0];
-                SpinnerAdaptor spinnerAdaptor = new SpinnerAdaptor(context, size);
+                SpinnerAdaptor spinnerAdaptor = new SpinnerAdaptor(context, size, color);
                 percentageSpinner.setAdapter(spinnerAdaptor);
 
                 percentageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -289,7 +435,6 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
                     confirmButton.setEnabled(true);
 
 
-
                 } else {
                     percentageSpinner.setEnabled(false);
                     PalletEditText.setEnabled(false);
@@ -308,7 +453,7 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
 
     class SyncUpdateArrival extends AsyncTask<Void, Void, String> {
         Context context;
-        String planDtl2String, usernameString,lat,lng;
+        String planDtl2String, usernameString, lat, lng;
 
         public SyncUpdateArrival(Context context, String planDtl2String, String usernameString, String lat, String lng) {
             this.context = context;
@@ -399,7 +544,7 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
                         .add("Driver_Name", loginStrings[7])
                         .add("pallet_qty", qtyString)
                         .add("percent_load", percentString)
-                        .add("remarkSupp",remarkString)
+                        .add("remarkSupp", remarkString)
                         .add("Lat", lat)
                         .add("Lng", lng)
                         .build();
@@ -454,29 +599,74 @@ public class SupplierDeliveryActivity extends AppCompatActivity {
             case R.id.btn_arrival:
                 UtilityClass utilityClass = new UtilityClass(SupplierDeliveryActivity.this);
                 utilityClass.setLatLong(0);
-                String latitude = utilityClass.getLatString();
-                String longitude = utilityClass.getLongString();
-                if (!(latitude == null)) {
-                    SyncUpdateArrival syncUpdateArrival = new SyncUpdateArrival(SupplierDeliveryActivity.this, planDtl2IdString, loginStrings[0], latitude, longitude);
-                    syncUpdateArrival.execute();
-                } else {
-                    Toast.makeText(SupplierDeliveryActivity.this, getResources().getString(R.string.save_error), Toast.LENGTH_LONG).show();
+                final String latitude = utilityClass.getLatString();
+                final String longitude = utilityClass.getLongString();
+                if (loginStrings[4].equals("Y")) {
+                    if (utilityClass.setLatLong(0)) {
+                        // if (Double.parseDouble(utilityClass.getDistanceMeter(suppLatString, suppLonString)) >= Double.parseDouble(suppRadiusString)) {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+                        dialog.setTitle("Alert");
+                        dialog.setCancelable(true);
+                        dialog.setMessage(R.string.arrivalDialog);
+                        dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (!(latitude == null)) {
+                                    SyncUpdateArrival syncUpdateArrival = new SyncUpdateArrival(SupplierDeliveryActivity.this, planDtl2IdString, loginStrings[0], latitude, longitude);
+                                    syncUpdateArrival.execute();
+                                } else {
+                                    Toast.makeText(SupplierDeliveryActivity.this, getResources().getString(R.string.save_error), Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+
+                        dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                        dialog.show();
+                    }
                 }
+
                 break;
             case R.id.btn_confirm:
                 utilityClass = new UtilityClass(SupplierDeliveryActivity.this);
                 utilityClass.setLatLong(0);
-                latitude = utilityClass.getLatString();
-                longitude = utilityClass.getLongString();
+                final String latitude1 = utilityClass.getLatString();
+                final String longitude1 = utilityClass.getLongString();
                 Log.d("Tag", "Spinner ==> " + spinnerValueString);
-                if (!(latitude == null)) {
-                    SyncUpdateDeparture syncUpdateDeparture = new SyncUpdateDeparture(SupplierDeliveryActivity.this, latitude, longitude,PalletEditText.getText().toString(), spinnerValueString,commentEditText.getText().toString());
-                    syncUpdateDeparture.execute();
 
-                }else {
-                    Toast.makeText(SupplierDeliveryActivity.this, getResources().getString(R.string.save_error), Toast.LENGTH_LONG).show();
+                if (loginStrings[5].equals("Y")) {
+                    if (utilityClass.setLatLong(0)) {
+                        // if(Double.parseDouble(utilityClass.getDistanceMeter(suppLatString,suppLonString)) >= Double.parseDouble(suppRadiusString)) {
+
+                        AlertDialog.Builder dialog1 = new AlertDialog.Builder(this);
+                        dialog1.setTitle("Alert");
+                        dialog1.setCancelable(true);
+                        dialog1.setMessage(R.string.departDialog);
+
+                        dialog1.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                if (!(latitude1 == null)) {
+                                    SyncUpdateDeparture syncUpdateDeparture = new SyncUpdateDeparture(SupplierDeliveryActivity.this, latitude1, longitude1, PalletEditText.getText().toString(), spinnerValueString, commentEditText.getText().toString());
+                                    syncUpdateDeparture.execute();
+
+                                } else {
+                                    Toast.makeText(SupplierDeliveryActivity.this, getResources().getString(R.string.save_error), Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+
+                        dialog1.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                        dialog1.show();
+                        break;
+                    }
                 }
-                break;
         }
     }
 }

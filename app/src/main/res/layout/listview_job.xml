@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/listJob"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center"
     android:orientation="horizontal">
 
     <ImageView
@@ -21,22 +23,23 @@
 
         <TextView
             android:id="@+id/txtSup"
-            android:layout_width="180dp"
+            android:layout_width="174dp"
             android:layout_height="match_parent"
-            android:layout_weight="0"
             android:fontFamily="monospace"
+            android:gravity="center_vertical"
             android:text="TextView"
             android:textColor="@android:color/background_dark"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/txtTime"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0"
             android:singleLine="true"
             android:textColor="@android:color/black"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
 </LinearLayout>

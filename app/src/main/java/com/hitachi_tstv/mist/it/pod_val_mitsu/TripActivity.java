@@ -1,11 +1,18 @@
 package com.hitachi_tstv.mist.it.pod_val_mitsu;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.IntentCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -46,13 +53,61 @@ public class TripActivity extends AppCompatActivity {
     @BindView(R.id.tripListviewTrip)
     ListView tripListviewTrip;
     private String[][] suppSeqStrings, suppCodeStrings, suppNameStrings, planDtl2IdStrings;
-    private String[] loginStrings, positionStrings, planDtlIdStrings, placeTypeStrings, transportTypeStrings;
+    private String[] loginStrings, positionStrings, planDtlIdStrings, placeTypeStrings, transportTypeStrings,endarraivalDateStrings;
     String planDateStrings, planIdString, dateString;
 
     @Override
     public void onBackPressed() {
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.logout,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
+
+                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+                dialog.setTitle("Alert");
+                dialog.setCancelable(true);
+                dialog.setIcon(R.drawable.warning);
+                dialog.setMessage(R.string.alert_logout);
+
+                dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        ComponentName componentName = intent.getComponent();
+                        Intent backToMainIntent = IntentCompat.makeRestartActivityTask(componentName);
+                        startActivity(backToMainIntent);
+                    }
+                });
+
+                dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                dialog.show();
+                break;
+            case R.id.refresh:
+                Intent intent1 = new Intent(TripActivity.this, TripActivity.class);
+                intent1.putExtra("Login", loginStrings);
+                intent1.putExtra("Date", dateString);
+                startActivity(intent1);
+                finish();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +204,7 @@ public class TripActivity extends AppCompatActivity {
                 placeTypeStrings = new String[jsonArray.length()];
                 transportTypeStrings = new String[jsonArray.length()];
                 positionStrings = new String[jsonArray.length()];
+                endarraivalDateStrings = new String[jsonArray.length()];
 
                 suppSeqStrings = new String[jsonArray.length()][];
                 suppCodeStrings = new String[jsonArray.length()][];
@@ -160,6 +216,7 @@ public class TripActivity extends AppCompatActivity {
                     planDtlIdStrings[i] = jsonObject3.getString("planDtlId");
                     placeTypeStrings[i] = jsonObject3.getString("placeType");
                     transportTypeStrings[i] = jsonObject3.getString("transport_type");
+                    endarraivalDateStrings[i] = jsonObject3.getString("en_arrivalDate");
                     positionStrings[i] = String.valueOf(i + 1);
 
                     Log.d("Tag", "------>planDtlIdStrings:::--> " + planDtlIdStrings[i]);
@@ -181,9 +238,10 @@ public class TripActivity extends AppCompatActivity {
 
                     }
                 }
+                Log.d("TAG", "END DATE ==>  " + endarraivalDateStrings[0]);
 
 
-                TripAdapter tripAdapter = new TripAdapter(TripActivity.this, planDtl2IdStrings, suppCodeStrings, suppNameStrings, suppSeqStrings, positionStrings);
+                TripAdapter tripAdapter = new TripAdapter(TripActivity.this, planDtl2IdStrings, suppCodeStrings, suppNameStrings, suppSeqStrings, positionStrings,endarraivalDateStrings);
                 tripListviewTrip.setAdapter(tripAdapter);
 
                 tripListviewTrip.setOnItemClickListener(new AdapterView.OnItemClickListener() {

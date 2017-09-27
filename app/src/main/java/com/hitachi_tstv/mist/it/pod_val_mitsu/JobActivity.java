@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -52,9 +55,35 @@ public class JobActivity extends AppCompatActivity {
     @BindView(R.id.lisJABottom)
     LinearLayout lisJABottom;
 
-    String[] loginStrings, placeTypeStrings, planDtlIdStrings, timeArrivalStrings, stationNameStrings, transportTypeStrings;
+    String[] loginStrings, placeTypeStrings, planDtlIdStrings,receiveStatusStrings, timeArrivalStrings, stationNameStrings, transportTypeStrings,fleetstatusString;
 
     String worksheetString,  planNoStrings, endArrivalDateString,startDepartureDateString,datePlanStrings, positionString, planIdString, planDtlIdString;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main_menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.refresh:
+                Intent intent1 = new Intent(JobActivity.this, JobActivity.class);
+                intent1.putExtra("Login", loginStrings);
+                intent1.putExtra("planDate", datePlanStrings);
+                intent1.putExtra("position", positionString);
+                intent1.putExtra("planId", planIdString);
+                intent1.putExtra("planDtlId", planDtlIdString);
+                startActivity(intent1);
+                finish();
+                break;
+        }
+
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onBackPressed() {
@@ -138,6 +167,8 @@ public class JobActivity extends AppCompatActivity {
                 timeArrivalStrings = new String[jsonArray1.length()];
                 transportTypeStrings = new String[jsonArray1.length()];
                 placeTypeStrings = new String[jsonArray1.length()];
+                receiveStatusStrings = new String[jsonArray1.length()];
+                fleetstatusString = new String[jsonArray1.length()];
                 for (int j = 0; j < jsonArray1.length(); j++) {
                     JSONObject jsonObject2 = jsonArray1.getJSONObject(j);
                     planDtlIdStrings[j] = jsonObject2.getString("planDtl2_id");
@@ -145,6 +176,8 @@ public class JobActivity extends AppCompatActivity {
                     timeArrivalStrings[j] = jsonObject2.getString("timeArrival");
                     transportTypeStrings[j] = jsonObject2.getString("transport_type");
                     placeTypeStrings[j] = jsonObject2.getString("placeType");
+                    fleetstatusString[j] = jsonObject2.getString("fleet_status");
+                    receiveStatusStrings[j] = jsonObject2.getString("receiveStatus");
                 }
 
                 if (!startDepartureDateString.equals("")) {
@@ -160,8 +193,14 @@ public class JobActivity extends AppCompatActivity {
                     buttonFinish.setVisibility(View.VISIBLE);
                 }
 
-
-                JobAdaptor manageJobAdaptor = new JobAdaptor(JobActivity.this, planDtlIdStrings, stationNameStrings, timeArrivalStrings,placeTypeStrings);
+                if (fleetstatusString[0].equals("sub")) {
+                    btnStart.setVisibility(View.GONE);
+                    buttonFinish.setVisibility(View.GONE);
+                }else {
+                    btnStart.setVisibility(View.VISIBLE);
+                    buttonFinish.setVisibility(View.VISIBLE);
+                }
+                JobAdaptor manageJobAdaptor = new JobAdaptor(JobActivity.this, planDtlIdStrings, stationNameStrings, timeArrivalStrings,placeTypeStrings,startDepartureDateString,receiveStatusStrings);
                 lisJAStore.setAdapter(manageJobAdaptor);
 
                 lisJAStore.setOnItemClickListener(new AdapterView.OnItemClickListener() {
